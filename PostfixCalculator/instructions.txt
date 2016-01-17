@@ -1,0 +1,22 @@
+To use enter problem in postfix notation.
+'+' for addition
+'-' for subtraction
+'*' for multiplication
+'/' for division
+'**' for power
+
+Works for nonnegative numbers only
+No parentheses
+
+Handles errors and bad inputs pretty well.
+
+
+separate each digit and symbol with a space
+e.g
+
+3 + 4 * 2 would be entered as
+3 4 2 + *
+and would output 11
+
+Takes input from stdin.
+pressing enter will go to a new line and allow another input. EOT ends the program.

@@ -1,0 +1,85 @@
+ Cash Register
+Summary
+
+This assignment will give you practise w/user and program interfaces, and unit testing.
+
+Create a cash register program called assn4 .
+
+You will write a cash register,
+
+assn4 will initialise the register, accept purchases, make change, and provide a report on the total of goods sold at the end of the day, the total of cash in the register, and the number of each type of bill.
+
+
+Write a command-line utility called assn4 which will process operations init, purchase, change, and report. Your program will store the drawer's state in a local file, format of your choosing.
+
+The cash register only works with $1's, $5's, $10's, $20's.
+
+Change should always be made with the largest available denominations, and your program should handle the problems with running out of various denomination.
+
+The major consideration with this assignment is to develop the unit tests to prove your software is robust and correct. Especially around the edge cases where the till is out of specific denominations.
+
+Make sure the change command returns the correct total. Don't return three tens in exchange for a twenty.
+Return Codes
+0 	SUCCESS (drawer was successfully changed)
+1 	Bad arguments (format/number)
+2 	Amounts don't jibe. E.g., left- and right-hand side of change aren't equal, or amount tendered is less than purchase price
+3 	Drawer has insufficient money or denominations to make proper change
+4 	Unable to read/write data file
+
+Note: For any non-zero (unsuccessful) return value, the state of the register will remain unchanged.
+Descriptions of Subcommands
+
+init amt = ones [fives [tens [twenties]]]
+
+    Initialise drawer, using counts of bills provided
+    If a drawer already exists, this will overwrite it. (Essentially, start a new shift.)
+    Output: None
+
+purchase price = amount_tendered
+
+    price
+        Integer
+    amount_tendered
+        Number and type of bills given to register
+        ones [fives [tens [twenties]]], where amounts are integers (counts)
+    Output will be a single line, if successful:
+        change returned , where change returned has the same format: ones fives tens twenties
+
+change tendered = bills_requested
+
+    tendered and bills_requested
+        ones [fives [tens [twenties]]], where amounts are integers (counts)
+    Output will be a single line, if successful:
+        change returned , where change returned has the same format: ones fives tens twenties
+
+report
+
+    Output a single line, the total of the drawer, and a breakdown of the bills
+        sales : total = ones fives tens twenties
+        sales is the total of sales on the register, total is the total amount of money in the drawer, followed by the breakdown.
+
+All ammounts are USD.
+
+
+If no argument is supplied, print a usage message and exit.
+
+Program defensively. We be looking to slip you something you won't expect.
+
+Example Output
+
+$  # Initialize the till with a two five dollar bills and five ones.
+$ assn4 init 15 = 10 1 0 0 
+$  # Verify input for init (that amounts match):
+$  # Purchase $38 with two $20s:
+$ assn4 purchase 38 = 0 0 0 2
+2 0 0 0
+$  # Change a five for 5 ones
+$ assn4 change 0 1 = 5 
+5 0 0 0
+$  # Change a 20 for a ten, five and five ones:
+$ assn4 change 0 0 0 1 = 5 1 1 0
+$  # Report the contents of the till
+$ assn4 report
+38 : 28 = 3 2 0 2
+s
+Please note: You will use the filenames as listed here, and submit them all to the proper assignment. If this is not clear, then see me in class. If I get programs submitted to the wrong directories, I will be irate, which may, in some subconscious way, affect your grades. Adversely. 

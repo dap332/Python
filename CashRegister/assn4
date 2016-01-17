@@ -1,0 +1,229 @@
+#!/usr/bin/python
+
+import sys
+#make sure arguments arent too short also helps with parsing
+if(len(sys.argv) < 2):
+	print "Bad args!"
+	sys.exit(1)
+
+inp = sys.argv[1:]
+
+bills = inp[3:]
+
+
+
+
+#if(inp[0] == "init"):
+#print "g"
+#	init(inp[1], bills)
+
+#initializes drawer, writes into the file "data"
+
+def init(val,money):
+	try:
+		val = int(val)
+	except ValueError:
+	#	print "Bad Args!"
+		sys.exit(1)
+	
+	if( checkJibe(val,money) == True):
+		while (len(money) < 4):
+			money.append('0')
+		try:
+			f = file("data", "w+")
+			s = ' '.join(money)
+			f.write(s)
+			f.close()
+			sys.exit(0)
+		except IOError:
+	#		print "Cannot read necessary files"
+			sys.exit(4)
+	else:
+	#	print "Amounts don't jibe"
+		sys.exit(2) 
+
+#returns sum of bills when given as a list of bills
+def countMoney(money):
+	total = 0
+	for i in range(len(money)):
+		if (i == 0):
+			try:
+				total += int(money[i])
+			except ValueError:
+	#			print "Bad Args!"
+				sys.exit(1)
+		if (i == 1):
+                        try:
+                                total += (int(money[i]) * 5)
+                        except ValueError:
+           #                     print "Bad Args!"
+                                sys.exit(1)
+		if (i == 2):
+                        try:
+                                total += (int(money[i]) * 10)
+                        except ValueError:
+          #                      print "Bad Args!"
+                                sys.exit(1)
+		if (i == 3):
+                        try:
+                                total += (int(money[i]) * 20)
+                        except ValueError:
+         #                       print "Bad Args!"
+                                sys.exit(1)
+	return int(total)
+
+#checks to see if a value is equal to the sum of a list of bills
+def checkJibe(val, money):
+	return (int(val) == countMoney(money))
+
+#takes money and bills and returns change, updates drawer
+def purchase(val, arg, money):
+	try:
+		val = int(val)
+	except ValueError:
+	#	print "Bad Args!"
+		sys.exit(1)
+	payment = countMoney(arg)
+	if ( val > payment):
+	#	print "Doesn't Jibe"
+		sys.exit(2)
+	for i in range(len(arg)):
+		try:
+			money[i] = str(int(arg[i]) + int(money[i]))
+		except ValueError:
+	#		print "Bad Args!"
+			sys.exit(1)
+#	print "change" , (payment - val)
+	money = calculateChange((payment - val), money)
+#	print "money", money
+	try:
+		f = file("data", "w+")
+        	s = ' '.join(money)
+        	f.write(s)
+        	f.close()
+		f = file("data2", "w+")
+		f.write(str(val))
+		f.close()
+        	sys.exit(0)
+	except IOError:
+	#	print "Cannot read/write file"
+		sys.exit(4)
+
+#calculates change to the highest denomination, also prints the change
+def calculateChange(val,money):
+	l = ['0', '0', '0', '0']
+
+	while ( (int(money[3]) > 0) and ((val - 20) > -1)):
+		val -= 20;
+		money[3] = str(int(money[3]) - 1)
+		l[3] = str(int(l[3]) + 1)
+					
+	while ( (int(money[2]) > 0) and ((val - 10) > -1)):
+                val -= 10;
+                money[2] = str(int(money[2]) - 1)
+                l[2] = str(int(l[2]) + 1)
+
+	while ( (int(money[1]) > 0) and ((val - 5) > -1)):
+                val -= 5;
+                money[1] = str(int(money[1]) - 1)
+                l[1] = str(int(l[1]) + 1)
+
+	while ( (int(money[0]) > 0) and ((val - 1) > -1)):
+                val -= 1;
+                money[0] = str(int(money[0]) - 1)
+                l[0] = str(int(l[0]) + 1)
+
+	if(val > 0):
+	#	print "Insufficient funds/denominations!"
+		sys.exit(3)
+
+	s = ' '.join(l);
+	print s
+	return money
+
+#gives exact change as needed in the change argument, updates drawer	
+def exactChange(left, right, money):
+	if(countMoney(left) != countMoney(right)):
+	#	print "Doesn't Jibe"
+		sys.exit(2)
+	for i in range(len(left)):
+                try:
+                        money[i] = str(int(left[i]) + int(money[i]))
+                except ValueError:
+                 #       print "Bad Args!"
+                        sys.exit(1)
+	for i in range(len(right)):
+                try:
+                        if ((int(money[i]) - int(right[i])) > -1):
+				money[i] = str(int(money[i]) - int(right[i]))
+			else:
+		#		print "Insufficient funds/ denominations!"
+				sys.exit(3)
+                except ValueError:
+                 #       print "Bad Args!"
+                        sys.exit(1)
+	print ' '.join(right)
+	try:
+                f = file("data", "w+")
+                s = ' '.join(money)
+                f.write(s)
+                f.close()
+                sys.exit(0)
+        except IOError:
+                #print "Cannot read/write file"
+                sys.exit(4)
+	
+#reads from a file tha keeps track of purchases, and the file with the
+#drawer, prints in the specified output the specified info
+def report():
+	try:
+                f = file("data2", "r")
+                line = f.readline().strip('\n')
+        except IOError:
+                #print "Cannot read/write needed files"
+                sys.exit(4)
+	try:
+                f = file("data", "r")
+                money = f.readline().strip('\n')
+        except IOError:
+                #print "Cannot read/write needed files"
+                sys.exit(4)
+
+	print line + " : " + str(countMoney(money.split(" "))) + " = " + money
+	sys.exit(0) 
+
+#handles the different inputs
+if(inp[0] == "init"):
+	if(len(inp) > 7):
+		sys.exit(1)
+	init(inp[1], bills)
+if(inp[0] == "purchase"):
+	if(len(inp) > 7):
+		sys.exit(1)
+	try:
+		f = file("data", "r")
+		line = f.readline().strip('\n').split(" ")
+	except IOError:
+	#	print "Cannot read/write needed files"
+		sys.exit(4)
+	purchase(inp[1], bills, line)
+if(inp[0] == "change"):
+	if(len(inp) > 10):
+		sys.exit(1)
+	s = ' '.join(inp[1:])
+	l = s.split('=')
+	left = l[0].split()
+	right = l[1].split()
+	try:
+                f = file("data", "r")
+                line = f.readline().strip('\n').split(" ")
+        except IOError:
+         #       print "Cannot read/write needed files"
+                sys.exit(4)	
+	exactChange(left,right,line)
+if(inp[0] == "report"):
+	if(len(inp) >  1):
+		sys.exit(1)
+	report()
+else:
+	sys.exit(1)

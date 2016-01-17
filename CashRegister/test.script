@@ -1,0 +1,50 @@
+#!/bin/bash
+
+./assn4 init 15 = 0 1 1 0
+#the file "data" should be created if not already exisiting
+# "data" should read 0 1 1 0
+#exit code 0
+
+./assn4 init 15 = 0 1 1 0 1 1 
+#exit code should be 1
+# no changes
+
+./assn4 init 1e = 0 1 9 e
+#exie code should be 1
+#no changes
+
+./assn4 init 15 = 1 1 1 1 
+#numbers dont jibe so no changes occur
+# exit code 2
+
+./assn4 purchase 38 = 0 0 0 2
+#insufficient denomination of change
+#no changes
+#exit code 3
+
+./assn4 purchase 40 = 1 0 0 2
+#prints change of 1
+#drawer should be 0 1 1 2
+#exit code 0
+./assn4 change 0 1 = 0 1
+#change returns 0 1
+#no changes in drawer
+#exit code 0
+./assn4 change 10 0 0 0 = 0 0 1 0
+#change returns 0 0 1 0
+#drawer is now 10 1 0 2
+#exit code 0
+./assn4 change 10 0 = 0 0 0 1
+#amount doent jibe
+#no changes
+#exit code 2
+./assn4 report
+#prints 40 : 55 = 10 1 0 2
+#exit code 0
+./assn4 report foo
+#no changes
+#exit code 1
+./assn4 change 20 1 = 5 0 0 1
+#prints change of 5 0 0 1
+#balance in drawer is 25 2 0 1
+#exit code 1
